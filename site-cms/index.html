@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ja" class="auth-pending">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>NAUGHTY SITE CMS</title>
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <meta name="theme-color" content="#0a070b" />
+  <link rel="stylesheet" href="../auth-gate.css?v=site-cms-20260724" />
+  <link rel="stylesheet" href="styles.css?v=site-cms-v1-20260724" />
+</head>
+<body>
+  <header class="cms-header">
+    <div>
+      <span class="cms-kicker">NAUGHTY / SITE CONTENT</span>
+      <h1>サイト掲載内容CMS</h1>
+    </div>
+    <a class="ghost-button" href="../08_site_v14_netlify_20260719/index.html?v=site-cms-preview-20260724" target="_blank" rel="noreferrer">サイトを見る ↗</a>
+  </header>
+
+  <main>
+    <section class="notice-card">
+      <div>
+        <span class="status-dot"></span>
+        <strong>キャスト紹介・写真の編集専用</strong>
+      </div>
+      <p>売上・給与・従業員アカウントは、この画面には保存されません。</p>
+      <small>現在は同じブラウザ内で公開サイトへ反映する仮運用です。別端末への同期は本番データベース接続後に有効になります。</small>
+    </section>
+
+    <section class="workspace">
+      <aside class="cast-nav">
+        <div class="section-head">
+          <div><span>CAST LINE UP</span><h2>編集するキャスト</h2></div>
+          <button class="icon-button" id="add-cast" type="button" aria-label="キャストを追加">＋</button>
+        </div>
+        <div class="cast-list" id="cast-list" role="list"></div>
+      </aside>
+
+      <form class="editor" id="cast-form">
+        <div class="editor-head">
+          <div>
+            <span id="editor-roman">CAST</span>
+            <h2 id="editor-title">キャストを選択</h2>
+          </div>
+          <label class="visible-switch">
+            <input id="staff-visible" type="checkbox" />
+            <span>サイトに表示</span>
+          </label>
+        </div>
+
+        <div class="field-grid">
+          <label>
+            <span>表示名</span>
+            <input id="staff-name" type="text" autocomplete="off" />
+          </label>
+          <label>
+            <span>ローマ字</span>
+            <input id="staff-roman" type="text" autocomplete="off" />
+          </label>
+          <label class="field-wide">
+            <span>一言紹介</span>
+            <input id="staff-short" type="text" maxlength="80" placeholder="例：ふわっと話せる月明かりキャスト。" />
+          </label>
+          <label class="field-wide">
+            <span>短い紹介文</span>
+            <textarea id="staff-profile" rows="4" maxlength="240" placeholder="長くしすぎず、2〜3行で魅力を紹介します。"></textarea>
+          </label>
+          <label class="field-wide">
+            <span>タグ</span>
+            <input id="staff-tags" type="text" placeholder="例：moon, sweet, talk" />
+            <small>カンマ区切り／最大4個</small>
+          </label>
+          <label>
+            <span>本人Instagram</span>
+            <input id="staff-instagram" type="text" inputmode="url" placeholder="@account またはURL" />
+          </label>
+          <label>
+            <span>本人X</span>
+            <input id="staff-x" type="text" inputmode="url" placeholder="@account またはURL" />
+          </label>
+          <label>
+            <span>本日の表示</span>
+            <select id="staff-status">
+              <option value="working">出勤中</option>
+              <option value="soon">まもなく</option>
+              <option value="scheduled">本日出勤</option>
+              <option value="off">休み</option>
+            </select>
+          </label>
+        </div>
+
+        <section class="photo-editor">
+          <div class="section-head">
+            <div><span>CAST PHOTOS</span><h2>ポップアップの写真</h2></div>
+          </div>
+          <p class="section-note">1人につき3枚まで。アニメ画像はヒーロー専用のため、ここでは変更しません。</p>
+          <div class="photo-grid">
+            <article class="photo-slot" data-photo-field="photo">
+              <div class="photo-frame"><img id="preview-photo" alt="メイン宣材写真のプレビュー" /></div>
+              <div class="photo-copy"><span>01 / MAIN</span><strong>メイン宣材</strong><small>一覧と詳細の1枚目</small></div>
+              <input id="staff-photo" type="text" placeholder="画像URLまたは既存パス" />
+              <input id="file-photo" type="file" accept="image/*" hidden />
+              <button class="upload-button" type="button" data-upload="photo">スマホから写真を選ぶ</button>
+            </article>
+
+            <article class="photo-slot" data-photo-field="heroRealPhoto">
+              <div class="photo-frame"><img id="preview-heroRealPhoto" alt="2枚目の宣材写真プレビュー" /></div>
+              <div class="photo-copy"><span>02 / PORTRAIT</span><strong>宣材写真 2</strong><small>詳細ポップアップ用</small></div>
+              <input id="staff-heroRealPhoto" type="text" placeholder="画像URLまたは既存パス" />
+              <input id="file-heroRealPhoto" type="file" accept="image/*" hidden />
+              <button class="upload-button" type="button" data-upload="heroRealPhoto">スマホから写真を選ぶ</button>
+            </article>
+
+            <article class="photo-slot" data-photo-field="portraitIcon">
+              <div class="photo-frame"><img id="preview-portraitIcon" alt="顔寄り写真のプレビュー" /></div>
+              <div class="photo-copy"><span>03 / CLOSE UP</span><strong>顔寄り写真</strong><small>一覧カードに優先表示</small></div>
+              <input id="staff-portraitIcon" type="text" placeholder="画像URLまたは既存パス" />
+              <input id="file-portraitIcon" type="file" accept="image/*" hidden />
+              <button class="upload-button" type="button" data-upload="portraitIcon">スマホから写真を選ぶ</button>
+            </article>
+          </div>
+        </section>
+
+        <footer class="save-bar">
+          <div>
+            <strong id="save-state">変更なし</strong>
+            <small id="save-detail">この端末に保存されます</small>
+          </div>
+          <button class="primary-button" id="save-content" type="submit">変更を保存</button>
+        </footer>
+      </form>
+    </section>
+
+    <section class="backup-card">
+      <div>
+        <span>BACKUP</span>
+        <h2>内容の控え</h2>
+        <p>保存前の内容を端末内に残します。念のため、打ち合わせ後や写真差し替え後はファイルでも控えを保存してください。</p>
+      </div>
+      <div class="backup-actions">
+        <button class="ghost-button" id="export-backup" type="button">バックアップを書き出す</button>
+        <button class="ghost-button" id="restore-backup" type="button">直前の内容に戻す</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="../08_site_v14_netlify_20260719/public-data.js?v=site-cms-v1-20260724"></script>
+  <script src="app.js?v=site-cms-v1-20260724"></script>
+  <script src="../auth-gate.js?v=site-cms-20260724" data-force="true"></script>
+</body>
+</html>
