@@ -39,6 +39,23 @@ function altCastSocials(castId) {
   };
 }
 
+function altCastMedia(cast) {
+  const staff = (window.NTY.raw?.staff || []).find((item) => item.id === cast?.id) || {};
+  const candidates = [
+    { src: staff.photo || cast?.card || cast?.real, label: "PROMOTION" },
+    { src: staff.heroRealPhoto || cast?.real || cast?.card, label: "PORTRAIT" },
+    { src: staff.portraitIcon, label: "CLOSE UP" }
+  ];
+  const seen = new Set();
+  return candidates.filter((item) => {
+    const src = String(item.src || "").trim();
+    if (!src || seen.has(src)) return false;
+    seen.add(src);
+    item.src = src;
+    return true;
+  });
+}
+
 function altYen(value) {
   return `${Number(value || 0).toLocaleString("ja-JP")}円`;
 }
@@ -365,70 +382,152 @@ function AltSchedule() {
 
 function AltCast() {
   const cast = window.NTY.cast;
-  const [active, setActive] = React.useState(0);
-  const current = cast[active];
-  const currentSocials = altCastSocials(current.id);
+  const [selectedIndex, setSelectedIndex] = React.useState(null);
+  const [photoIndex, setPhotoIndex] = React.useState(0);
+  const closeRef = React.useRef(null);
+  const selectedCast = selectedIndex === null ? null : cast[selectedIndex];
+  const selectedMedia = selectedCast ? altCastMedia(selectedCast) : [];
+  const selectedSocials = selectedCast ? altCastSocials(selectedCast.id) : {};
   const officialSocials = altOfficialSocials();
-  const move = (amount) => setActive((value) => (value + amount + cast.length) % cast.length);
+
+  const openCast = (index) => {
+    setPhotoIndex(0);
+    setSelectedIndex(index);
+  };
+
+  React.useEffect(() => {
+    if (selectedIndex === null) return undefined;
+    const previousFocus = document.activeElement;
+    const close = () => setSelectedIndex(null);
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") close();
+    };
+    document.documentElement.classList.add("alt-modal-open");
+    window.addEventListener("keydown", onKeyDown);
+    window.requestAnimationFrame(() => closeRef.current?.focus());
+    return () => {
+      document.documentElement.classList.remove("alt-modal-open");
+      window.removeEventListener("keydown", onKeyDown);
+      if (previousFocus && typeof previousFocus.focus === "function") previousFocus.focus();
+    };
+  }, [selectedIndex]);
+
+  const movePhoto = (amount) => {
+    setPhotoIndex((value) => (value + amount + selectedMedia.length) % selectedMedia.length);
+  };
 
   return (
     <section className="alt-section alt-cast" id="cast" data-section-id="cast" data-alt-section="cast">
-      <AltHeading index="03" eyebrow="CAST" title="キャスト紹介" italic="" note="プロフィール・出勤予定・SNSを確認できます。" />
-      <div className="alt-cast__stage alt-reveal">
-        <div className="alt-cast__number">{String(active + 1).padStart(2, "0")}<span>/ {String(cast.length).padStart(2, "0")}</span></div>
-        <div className="alt-cast__portrait">
-          <div className="alt-cast__halo" />
-          <img src={current.real || current.card || current.img} alt={current.jp} loading="lazy" decoding="async" key={current.id || current.en} />
-          <span>{current.en}</span>
+      <AltHeading index="03" eyebrow="CAST / GALLERY" title="キャスト紹介" italic="" note="気になるキャストをタップすると、プロフィールと写真をまとめて見られます。" />
+      <div className="alt-cast-directory alt-reveal">
+        <div className="alt-cast-directory__head">
+          <span>CAST LINE UP</span>
+          <p>写真をタップしてプロフィールを表示</p>
         </div>
-        <div className="alt-cast__copy" key={current.id || current.en}>
-          <p className="alt-cast__status">{current.badge?.label || "CAST"}<span>{current.badge?.detail || current.next}</span></p>
-          <small>{current.en}</small>
-          <h3>{current.jp}</h3>
-          <blockquote>“{current.catch}”</blockquote>
-          <p>{current.comment}</p>
-          <div className="alt-cast__tags">{current.tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>
-          <div className="alt-cast__socials">
-            {currentSocials.instagram && <a href={currentSocials.instagram} target="_blank" rel="noreferrer">INSTAGRAM <b>↗</b></a>}
-            {currentSocials.x && <a href={currentSocials.x} target="_blank" rel="noreferrer">X <b>↗</b></a>}
-            {!currentSocials.instagram && !currentSocials.x && <small>SNSは本人確認後に公開します</small>}
-          </div>
-          <div className="alt-cast__controls">
-            <button type="button" onClick={() => move(-1)} aria-label="前のキャスト">←</button>
-            <button type="button" onClick={() => move(1)} aria-label="次のキャスト">→</button>
-          </div>
-        </div>
-        <div className="alt-cast__thumbs">
+        <div className="alt-cast-directory__rail">
           {cast.map((item, index) => (
-            <button type="button" className={active === index ? "is-active" : ""} onClick={() => setActive(index)} aria-label={item.jp} key={item.id || item.en}>
-              <img src={item.card || item.real || item.img} alt="" loading="lazy" decoding="async" /><span>{String(index + 1).padStart(2, "0")}</span>
+            <button
+              type="button"
+              className="alt-cast-card"
+              onClick={() => openCast(index)}
+              aria-haspopup="dialog"
+              aria-label={`${item.jp}のプロフィールと写真を見る`}
+              key={item.id || item.en}
+            >
+              <span className="alt-cast-card__photo">
+                <img src={altCastMedia(item).slice(-1)[0]?.src || item.card || item.real} alt="" loading="lazy" decoding="async" />
+              </span>
+              <span className="alt-cast-card__meta">
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <span><small>{item.en}</small><strong>{item.jp}</strong></span>
+                <b aria-hidden="true">＋</b>
+              </span>
             </button>
           ))}
         </div>
+        {officialSocials.instagram && (
+          <a className="alt-cast-directory__official" href={officialSocials.instagram} target="_blank" rel="noreferrer">
+            <span>公式Instagramでも写真を見る</span><b>↗</b>
+          </a>
+        )}
       </div>
-      <div className="alt-cast-gallery alt-reveal" aria-label="キャストギャラリー">
-        <div className="alt-cast-gallery__head"><span>CAST GALLERY</span></div>
-        <div className="alt-cast-gallery__grid">
-          {cast.map((item, index) => {
-            const socials = altCastSocials(item.id);
-            return (
-              <article key={`gallery-${item.id || item.en}`}>
-                <button type="button" className="alt-cast-gallery__photo" onClick={() => setActive(index)} aria-label={`${item.jp}のプロフィールを見る`}>
-                  <img src={item.real || item.card || item.img} alt={`${item.jp} 宣材写真`} loading="lazy" decoding="async" />
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                </button>
-                <div><small>{item.en}</small><h3>{item.jp}</h3></div>
-                <nav aria-label={`${item.jp}のSNS`}>
-                  {socials.instagram && <a href={socials.instagram} target="_blank" rel="noreferrer" aria-label={`${item.jp}のInstagram`}>IG ↗</a>}
-                  {socials.x && <a href={socials.x} target="_blank" rel="noreferrer" aria-label={`${item.jp}のX`}>X ↗</a>}
-                  {!socials.instagram && !socials.x && <span>SNS準備中</span>}
-                </nav>
-              </article>
-            );
-          })}
-        </div>
-        {officialSocials.instagram && <a className="alt-cast-gallery__official" href={officialSocials.instagram} target="_blank" rel="noreferrer"><span>公式Instagramでも写真を見る</span><b>↗</b></a>}
-      </div>
+      {selectedCast && ReactDOM.createPortal(
+        <div
+          className="alt-cast-modal"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setSelectedIndex(null);
+          }}
+        >
+          <article
+            className="alt-cast-modal__panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="alt-cast-modal-title"
+            aria-describedby="alt-cast-modal-description"
+          >
+            <button
+              ref={closeRef}
+              className="alt-cast-modal__close"
+              type="button"
+              aria-label="キャスト紹介を閉じる"
+              onClick={() => setSelectedIndex(null)}
+            >
+              ×
+            </button>
+            <div className="alt-cast-modal__gallery">
+              <div className="alt-cast-modal__main-photo">
+                <img
+                  src={selectedMedia[photoIndex]?.src || selectedCast.card || selectedCast.real}
+                  alt={`${selectedCast.jp} ${selectedMedia[photoIndex]?.label || "宣材写真"}`}
+                  decoding="async"
+                />
+                <span>{selectedMedia[photoIndex]?.label || "PHOTO"} / {String(photoIndex + 1).padStart(2, "0")}</span>
+                {selectedMedia.length > 1 && (
+                  <div className="alt-cast-modal__photo-controls">
+                    <button type="button" onClick={() => movePhoto(-1)} aria-label="前の写真">←</button>
+                    <button type="button" onClick={() => movePhoto(1)} aria-label="次の写真">→</button>
+                  </div>
+                )}
+              </div>
+              {selectedMedia.length > 1 && (
+                <div className="alt-cast-modal__thumbs" aria-label={`${selectedCast.jp}の写真一覧`}>
+                  {selectedMedia.map((media, index) => (
+                    <button
+                      type="button"
+                      className={photoIndex === index ? "is-active" : ""}
+                      onClick={() => setPhotoIndex(index)}
+                      aria-pressed={photoIndex === index}
+                      aria-label={`${media.label}を表示`}
+                      key={media.src}
+                    >
+                      <img src={media.src} alt="" loading="lazy" decoding="async" />
+                      <span>0{index + 1}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="alt-cast-modal__profile">
+              <p className="alt-cast-modal__status">
+                <span>{selectedCast.badge?.label || "CAST"}</span>
+                <small>{selectedCast.badge?.detail || selectedCast.next}</small>
+              </p>
+              <small className="alt-cast-modal__eyebrow">{selectedCast.en}</small>
+              <h3 id="alt-cast-modal-title">{selectedCast.jp}</h3>
+              <blockquote>“{selectedCast.catch}”</blockquote>
+              <p id="alt-cast-modal-description">{selectedCast.comment}</p>
+              <div className="alt-cast-modal__tags">{selectedCast.tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>
+              <nav className="alt-cast-modal__socials" aria-label={`${selectedCast.jp}のSNS`}>
+                {selectedSocials.instagram && <a href={selectedSocials.instagram} target="_blank" rel="noreferrer">INSTAGRAM <b>↗</b></a>}
+                {selectedSocials.x && <a href={selectedSocials.x} target="_blank" rel="noreferrer">X <b>↗</b></a>}
+                {!selectedSocials.instagram && !selectedSocials.x && <span>SNSは本人確認後に公開します</span>}
+              </nav>
+            </div>
+          </article>
+        </div>,
+        document.body
+      )}
     </section>
   );
 }
