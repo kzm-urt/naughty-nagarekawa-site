@@ -390,14 +390,18 @@ function AltSchedule() {
 
 function AltCast() {
   const cast = window.NTY.cast;
+  const [active, setActive] = React.useState(0);
   const [selectedIndex, setSelectedIndex] = React.useState(null);
   const [photoIndex, setPhotoIndex] = React.useState(0);
   const closeRef = React.useRef(null);
+  const current = cast[active];
+  const currentSocials = altCastSocials(current.id);
   const selectedCast = selectedIndex === null ? null : cast[selectedIndex];
   const selectedMedia = selectedCast ? altCastMedia(selectedCast) : [];
   const selectedSocials = selectedCast ? altCastSocials(selectedCast.id) : {};
   const officialSocials = altOfficialSocials();
 
+  const move = (amount) => setActive((value) => (value + amount + cast.length) % cast.length);
   const openCast = (index) => {
     setPhotoIndex(0);
     setSelectedIndex(index);
@@ -426,44 +430,51 @@ function AltCast() {
 
   return (
     <section className="alt-section alt-cast" id="cast" data-section-id="cast" data-alt-section="cast">
-      <AltHeading index="03" eyebrow="CAST / GALLERY" title="キャスト紹介" italic="" note="気になるキャストをタップすると、写真と短い紹介を見られます。" />
-      <div className="alt-cast-directory alt-reveal">
-        <div className="alt-cast-directory__head">
-          <span>CAST LINE UP</span>
-          <p>タップで写真と短い紹介</p>
+      <AltHeading index="03" eyebrow="CAST" title="キャスト紹介" italic="" note="プロフィール・出勤予定・SNSを確認できます。" />
+      <div className="alt-cast__stage alt-reveal">
+        <div className="alt-cast__number">{String(active + 1).padStart(2, "0")}<span>/ {String(cast.length).padStart(2, "0")}</span></div>
+        <button
+          type="button"
+          className="alt-cast__portrait alt-cast__portrait-button"
+          onClick={() => openCast(active)}
+          aria-haspopup="dialog"
+          aria-label={`${current.jp}の写真と詳しいプロフィールを見る`}
+        >
+          <div className="alt-cast__halo" />
+          <img src={current.real || current.card || current.img} alt={current.jp} loading="lazy" decoding="async" key={current.id || current.en} />
+          <span>{current.en}</span>
+          <small className="alt-cast__portrait-hint">写真とプロフィールを見る <b>＋</b></small>
+        </button>
+        <div className="alt-cast__copy" key={current.id || current.en}>
+          <p className="alt-cast__status">{current.badge?.label || "CAST"}<span>{current.badge?.detail || current.next}</span></p>
+          <small>{current.en}</small>
+          <h3>{current.jp}</h3>
+          <blockquote>“{current.catch}”</blockquote>
+          <p>{current.comment}</p>
+          <div className="alt-cast__tags">{current.tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>
+          <div className="alt-cast__socials">
+            {currentSocials.instagram && <a href={currentSocials.instagram} target="_blank" rel="noreferrer">INSTAGRAM <b>↗</b></a>}
+            {currentSocials.x && <a href={currentSocials.x} target="_blank" rel="noreferrer">X <b>↗</b></a>}
+            {!currentSocials.instagram && !currentSocials.x && <small>SNSは本人確認後に公開します</small>}
+          </div>
+          <div className="alt-cast__controls">
+            <button type="button" onClick={() => move(-1)} aria-label="前のキャスト">←</button>
+            <button type="button" onClick={() => move(1)} aria-label="次のキャスト">→</button>
+          </div>
         </div>
-        <div className="alt-cast-directory__rail">
+        <div className="alt-cast__thumbs">
           {cast.map((item, index) => (
-            <button
-              type="button"
-              className="alt-cast-card"
-              onClick={() => openCast(index)}
-              aria-haspopup="dialog"
-              aria-label={`${item.jp}のプロフィールと写真を見る`}
-              key={item.id || item.en}
-            >
-              <span className="alt-cast-card__photo">
-                <img src={altCastMedia(item).slice(-1)[0]?.src || item.card || item.real} alt="" loading="lazy" decoding="async" />
-              </span>
-              <span className="alt-cast-card__meta">
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <span><small>{item.en}</small><strong>{item.jp}</strong></span>
-                <b aria-hidden="true">＋</b>
-              </span>
+            <button type="button" className={active === index ? "is-active" : ""} onClick={() => setActive(index)} aria-label={item.jp} key={item.id || item.en}>
+              <img src={item.card || item.real || item.img} alt="" loading="lazy" decoding="async" /><span>{String(index + 1).padStart(2, "0")}</span>
             </button>
           ))}
         </div>
-        {officialSocials.instagram && (
-          <a className="alt-cast-directory__official" href={officialSocials.instagram} target="_blank" rel="noreferrer">
-            <span>その他の写真は公式Instagramへ</span><b>↗</b>
-          </a>
-        )}
       </div>
       {selectedCast && ReactDOM.createPortal(
         <div
           className="alt-cast-modal"
           role="presentation"
-          onMouseDown={(event) => {
+          onPointerDown={(event) => {
             if (event.target === event.currentTarget) setSelectedIndex(null);
           }}
         >

@@ -483,6 +483,17 @@ button { font: inherit; }
 .alt-cast__halo { position: absolute; width: 70%; aspect-ratio: 1; border: 1px solid rgba(255,79,145,.25); border-radius: 50%; box-shadow: 0 0 90px rgba(255,79,145,.12); }
 .alt-cast__portrait img { position: relative; z-index: 1; max-width: 94%; max-height: 96%; object-fit: contain; object-position: bottom; filter: drop-shadow(0 28px 34px rgba(0,0,0,.35)); }
 .alt-cast__portrait > span { position: absolute; left: 20px; bottom: 18px; z-index: 2; writing-mode: vertical-rl; color: rgba(255,255,255,.32); font: 600 44px/1 var(--f-display); letter-spacing: .08em; }
+.alt-cast__portrait-button { width: 100%; padding: 0; border: 0; color: inherit; font: inherit; cursor: pointer; }
+.alt-cast__portrait-button:focus-visible { outline: 2px solid var(--alt-pink); outline-offset: -4px; }
+.alt-cast__portrait-hint {
+  position: absolute; z-index: 3; right: 18px; bottom: 18px; display: inline-flex; align-items: center; gap: 10px;
+  min-height: 42px; padding: 0 13px 0 15px; border: 1px solid rgba(255,255,255,.18); border-radius: 999px;
+  color: #fff; background: rgba(8,6,9,.68); backdrop-filter: blur(12px) saturate(120%);
+  font: 700 9px/1 var(--f-mono); letter-spacing: .08em; transition: transform .2s ease, border-color .2s ease, background-color .2s ease;
+}
+.alt-cast__portrait-hint b { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: var(--alt-pink); font-size: 13px; }
+.alt-cast__portrait-button:hover .alt-cast__portrait-hint, .alt-cast__portrait-button:focus-visible .alt-cast__portrait-hint { transform: translateY(-3px); border-color: rgba(255,79,145,.7); background: rgba(18,9,14,.82); }
+.alt-cast__portrait-button:active .alt-cast__portrait-hint { transform: scale(.97); }
 .alt-cast__copy { display: flex; flex-direction: column; justify-content: center; padding: clamp(34px, 5vw, 78px); }
 .alt-cast__status { display: flex; justify-content: space-between; gap: 15px; margin: 0 0 auto; padding-bottom: 18px; border-bottom: 1px solid var(--alt-line); color: var(--alt-pink); font: 500 9px/1.4 var(--f-mono); letter-spacing: .1em; }
 .alt-cast__status span { color: var(--alt-muted); }
