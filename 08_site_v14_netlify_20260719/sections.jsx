@@ -774,7 +774,7 @@ function AltRecruit() {
       <div className="alt-recruit__marquee" aria-hidden="true"><span>JOIN THE NIGHT · NAUGHTY GIRLS · JOIN THE NIGHT · NAUGHTY GIRLS ·&nbsp;</span><span>JOIN THE NIGHT · NAUGHTY GIRLS · JOIN THE NIGHT · NAUGHTY GIRLS ·&nbsp;</span></div>
       <div className="alt-recruit__inner alt-reveal">
         <p>{recruit.kicker}</p>
-        <h2>その夜の主役に、<br /><em>なってみない？</em></h2>
+        <h2>キャスト募集</h2>
         <div className="alt-recruit__copy"><p>{recruit.sub}</p><p className="alt-recruit__copy-note">入力した内容はサイトから直接送信されません。コピーして、ご自身でInstagramのDMへ貼り付けてください。</p></div>
         <ol className="alt-recruit__steps" aria-label="応募の流れ">
           <li><small>STEP 01</small><strong>フォームに入力</strong></li>
