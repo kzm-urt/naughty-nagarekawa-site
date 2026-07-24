@@ -41,11 +41,22 @@ function altCastSocials(castId) {
 
 function altCastMedia(cast) {
   const staff = (window.NTY.raw?.staff || []).find((item) => item.id === cast?.id) || {};
-  const candidates = [
-    { src: staff.photo || cast?.card || cast?.real, label: "PROMOTION" },
-    { src: staff.heroRealPhoto || cast?.real || cast?.card, label: "PORTRAIT" },
-    { src: staff.portraitIcon, label: "CLOSE UP" }
-  ];
+  const gallery = Array.isArray(staff.galleryPhotos)
+    ? staff.galleryPhotos
+    : Array.isArray(staff.castGallery)
+      ? staff.castGallery
+      : [staff.galleryPhoto1, staff.galleryPhoto2, staff.galleryPhoto3];
+  const registered = gallery
+    .map((item) => typeof item === "string" ? item : item?.src || item?.image || "")
+    .map((src) => String(src || "").trim())
+    .filter(Boolean)
+    .slice(0, 3);
+  const candidates = registered.length
+    ? registered.map((src) => ({ src, label: "CAST PHOTO" }))
+    : [1, 2, 3].map((number) => ({
+        src: `assets/placeholders/cast-gallery-${String(number).padStart(2, "0")}.svg`,
+        label: "PHOTO SLOT"
+      }));
   const seen = new Set();
   return candidates.filter((item) => {
     const src = String(item.src || "").trim();
@@ -501,7 +512,7 @@ function AltCast() {
                   alt={`${selectedCast.jp} ${selectedMedia[photoIndex]?.label || "宣材写真"}`}
                   decoding="async"
                 />
-                <span>{selectedMedia[photoIndex]?.label || "PHOTO"} / {String(photoIndex + 1).padStart(2, "0")}</span>
+                <span>{selectedMedia[photoIndex]?.label || "PHOTO"} {String(photoIndex + 1).padStart(2, "0")} / {String(selectedMedia.length).padStart(2, "0")}</span>
                 {selectedMedia.length > 1 && (
                   <div className="alt-cast-modal__photo-controls">
                     <button type="button" onClick={() => movePhoto(-1)} aria-label="前の写真">←</button>
@@ -517,7 +528,7 @@ function AltCast() {
                       className={photoIndex === index ? "is-active" : ""}
                       onClick={() => setPhotoIndex(index)}
                       aria-pressed={photoIndex === index}
-                      aria-label={`${media.label}を表示`}
+                      aria-label={`${media.label} ${String(index + 1).padStart(2, "0")}を表示`}
                       key={media.src}
                     >
                       <img src={media.src} alt="" loading="lazy" decoding="async" />

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200" role="img" aria-labelledby="title desc">
+  <title id="title">キャスト写真2のプレースホルダー</title>
+  <desc id="desc">ここにキャストの写真が入ります。最大3枚まで掲載できます。</desc>
+  <defs>
+    <linearGradient id="base" x1="0" y1="1" x2="1" y2="0">
+      <stop stop-color="#08080b"/>
+      <stop offset=".5" stop-color="#1e1119"/>
+      <stop offset="1" stop-color="#5a2038"/>
+    </linearGradient>
+    <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="1.5" fill="#fff" fill-opacity=".07"/>
+    </pattern>
+  </defs>
+  <rect width="900" height="1200" fill="url(#base)"/>
+  <rect width="900" height="1200" fill="url(#dots)"/>
+  <circle cx="100" cy="980" r="410" fill="none" stroke="#ff4f91" stroke-opacity=".12" stroke-width="2"/>
+  <circle cx="100" cy="980" r="315" fill="none" stroke="#ff4f91" stroke-opacity=".08" stroke-width="2"/>
+  <path d="M0 228 900 70v172L0 400Z" fill="#ff4f91" fill-opacity=".11"/>
+  <rect x="72" y="72" width="756" height="1056" rx="32" fill="none" stroke="#fff" stroke-opacity=".15"/>
+  <text x="105" y="142" fill="#ff7aaf" font-family="Arial, sans-serif" font-size="23" font-weight="700" letter-spacing="5">CAST PHOTO / 02</text>
+  <g transform="translate(450 572)" text-anchor="middle">
+    <rect x="-92" y="-92" width="184" height="184" rx="46" fill="#fff" fill-opacity=".025" stroke="#fff" stroke-opacity=".16" transform="rotate(45)"/>
+    <path d="M-27 0h54M0-27v54" stroke="#ff83b5" stroke-width="5" stroke-linecap="round"/>
+    <text y="180" fill="#fff" font-family="'Noto Sans JP','Yu Gothic',sans-serif" font-size="36" font-weight="700" letter-spacing="3">ここに写真が入ります</text>
+    <text y="232" fill="#fff" fill-opacity=".5" font-family="'Noto Sans JP','Yu Gothic',sans-serif" font-size="21" letter-spacing="2">別カット・雰囲気写真</text>
+  </g>
+  <text x="105" y="1063" fill="#fff" fill-opacity=".5" font-family="'Noto Sans JP','Yu Gothic',sans-serif" font-size="22">最大3枚まで掲載できます</text>
+</svg>
