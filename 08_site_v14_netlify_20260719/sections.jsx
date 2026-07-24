@@ -108,7 +108,21 @@ function altGoTo(id) {
   const element = document.getElementById(id);
   if (!element) return;
   const y = element.getBoundingClientRect().top + window.scrollY - 74;
-  window.scrollTo({ top: y, behavior: "smooth" });
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.scrollTo({ top: y, behavior: reducedMotion ? "auto" : "smooth" });
+}
+
+function altGoToCast(castId) {
+  altGoTo("cast");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.setTimeout(() => {
+    const card = [...document.querySelectorAll(".alt-cast-card")]
+      .find((item) => item.dataset.castId === castId);
+    if (!card) return;
+    card.focus({ preventScroll: true });
+    card.classList.add("is-targeted");
+    window.setTimeout(() => card.classList.remove("is-targeted"), 1200);
+  }, reducedMotion ? 0 : 520);
 }
 
 function AltNav() {
@@ -303,40 +317,42 @@ function AltToday() {
   const source = window.NTY.todayList.length
     ? window.NTY.todayList
     : window.NTY.cast.slice(0, 5).map((cast) => ({ cast, time: cast.todayTime || "時間調整中", status: cast.todayState || "today" }));
-  const feature = source[0];
-  const rest = source.slice(1, 6);
-  const label = { now: "出勤中", soon: "まもなく", today: "本日出勤", off: "次回を確認" };
+  const members = source.slice(0, 7);
+  const label = { now: "今いるよ", soon: "もうすぐ", today: "本日出勤", off: "次回を確認" };
 
   return (
     <section className="alt-section alt-today" id="shift" data-section-id="shift" data-alt-section="shift">
       <AltHeading index="02" eyebrow="TODAY'S CAST" title="本日の出勤" italic="" note="当日の宣材写真と出勤時間を、来店前にひと目で確認できます。" />
-      <div className="alt-today__layout">
-        <article className="alt-today__feature alt-reveal" data-tilt>
-          <div className="alt-today__media">
-            <img src={feature.cast.card || feature.cast.img} alt={feature.cast.jp} decoding="async" />
-            <span className={`alt-status is-${feature.status}`}><i />{label[feature.status] || "本日出勤"}</span>
-            <b className="alt-today__ghost">01</b>
-          </div>
-          <div className="alt-today__feature-copy">
-            <p>{feature.cast.en}</p>
-            <h3>{feature.cast.jp}</h3>
-            <blockquote>{feature.cast.catch || feature.cast.comment}</blockquote>
-            <div><span>SHIFT</span><strong>{feature.time}</strong></div>
-          </div>
-        </article>
-        <div className="alt-today__rail alt-reveal">
-          <div className="alt-today__rail-head"><span>TONIGHT'S LINEUP</span><small>{String(source.length).padStart(2, "0")} MEMBERS</small></div>
-          {rest.map(({ cast, time, status }, index) => (
-            <article className="alt-today__row" key={cast.id || cast.en}>
-              <span className="alt-today__row-num">{String(index + 2).padStart(2, "0")}</span>
-              <img src={cast.card || cast.img} alt="" loading="lazy" decoding="async" />
-              <div><small>{cast.en}</small><h3>{cast.jp}</h3></div>
-              <p>{time}</p>
-              <span className={`alt-dot is-${status}`} />
-            </article>
-          ))}
-          <button type="button" className="alt-text-button" onClick={() => altGoTo("monthly-shift")}>今月の出勤を見る <b>↘</b></button>
+      <div className="alt-today-cards-wrap alt-reveal">
+        <div className="alt-today-cards__head">
+          <span>TONIGHT'S LINEUP</span>
+          <small>{String(members.length).padStart(2, "0")} MEMBERS</small>
         </div>
+        <div className="alt-today-cards">
+          {members.map(({ cast, time, status }, index) => (
+            <button
+              type="button"
+              className="alt-today-card"
+              onClick={() => altGoToCast(cast.id)}
+              aria-label={`${cast.jp}のキャスト紹介へ移動。${label[status] || "本日出勤"}、${time}`}
+              key={cast.id || cast.en}
+            >
+              <span className="alt-today-card__media">
+                <img src={cast.card || cast.img} alt="" loading={index < 4 ? "eager" : "lazy"} decoding="async" />
+                <span className={`alt-today-card__status is-${status}`}><i />{label[status] || "本日出勤"}</span>
+                <b>{String(index + 1).padStart(2, "0")}</b>
+              </span>
+              <span className="alt-today-card__body">
+                <span className="alt-today-card__name"><small>{cast.en}</small><strong>{cast.jp}</strong></span>
+                <span className="alt-today-card__shift"><small>SHIFT</small><strong>{time}</strong></span>
+                <span className="alt-today-card__more">CAST PROFILE <b>→</b></span>
+              </span>
+            </button>
+          ))}
+        </div>
+        <button type="button" className="alt-today__schedule-link" onClick={() => altGoTo("monthly-shift")}>
+          全体のスケジュールを見る <b>↘</b>
+        </button>
       </div>
     </section>
   );
@@ -429,6 +445,7 @@ function AltCast() {
             <button
               type="button"
               className="alt-cast-card"
+              data-cast-id={item.id}
               onClick={() => openCast(index)}
               aria-haspopup="dialog"
               aria-label={`${item.jp}のプロフィールと写真を見る`}

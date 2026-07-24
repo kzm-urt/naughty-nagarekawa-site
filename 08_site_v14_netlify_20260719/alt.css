@@ -367,6 +367,87 @@ button { font: inherit; }
 .alt-text-button { width: 100%; min-height: 54px; display: flex; justify-content: space-between; align-items: center; padding: 0; border: 0; border-bottom: 1px solid var(--alt-line); background: transparent; color: #fff; cursor: pointer; font-size: 12px; }
 .alt-text-button b { color: var(--alt-pink); }
 
+/* Medium-size cards for today's cast */
+.alt-today-cards-wrap {
+  padding: clamp(16px, 2vw, 24px);
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 30px 5px 30px 5px;
+  background: radial-gradient(circle at 8% 0%, rgba(255,79,145,.1), transparent 26%), rgba(15,12,17,.78);
+  box-shadow: 0 28px 90px rgba(0,0,0,.28);
+}
+.alt-today-cards__head {
+  display: flex; align-items: center; justify-content: space-between; gap: 18px;
+  min-height: 42px; padding: 0 2px 13px; border-bottom: 1px solid var(--alt-line);
+  color: var(--alt-pink-soft); font: 700 9px/1 var(--f-mono); letter-spacing: .16em;
+}
+.alt-today-cards__head small { color: var(--alt-muted); font: inherit; }
+.alt-today-cards {
+  display: grid; grid-template-columns: none; grid-template-rows: 1fr;
+  grid-auto-flow: column; grid-auto-columns: calc((100% - 36px) / 4);
+  gap: 12px; margin-top: 14px; overflow-x: auto; overscroll-behavior-inline: contain;
+  scroll-snap-type: inline proximity; scrollbar-width: thin; scrollbar-color: rgba(255,79,145,.35) transparent;
+}
+.alt-today-card {
+  min-width: 0; padding: 0; overflow: hidden;
+  border: 1px solid rgba(255,255,255,.12); border-radius: 20px 4px 20px 4px;
+  color: #fff; background: #100d12; text-align: left; cursor: pointer;
+  box-shadow: 0 16px 42px rgba(0,0,0,.2);
+  scroll-snap-align: start;
+  transition: transform .22s var(--ease-out), border-color .22s ease, box-shadow .22s ease;
+}
+.alt-today-card:hover, .alt-today-card:focus-visible {
+  transform: translateY(-4px); border-color: rgba(255,79,145,.62);
+  box-shadow: 0 22px 50px rgba(0,0,0,.34); outline: 0;
+}
+.alt-today-card:active { transform: scale(.975); transition-duration: .08s; }
+.alt-today-card__media {
+  position: relative; display: block; width: 100%; aspect-ratio: 1 / 1.05;
+  overflow: hidden; background: radial-gradient(circle at 50% 25%, rgba(255,110,169,.16), transparent 38%), #171018;
+}
+.alt-today-card__media::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(0deg, rgba(4,3,5,.78) 0, transparent 44%);
+  pointer-events: none;
+}
+.alt-today-card__media img {
+  width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%;
+  filter: saturate(.9) contrast(1.04); transition: transform .55s var(--ease-out), filter .3s ease;
+}
+.alt-today-card:hover .alt-today-card__media img,
+.alt-today-card:focus-visible .alt-today-card__media img { transform: scale(1.035); filter: saturate(1) contrast(1.02); }
+.alt-today-card__media > b {
+  position: absolute; z-index: 2; right: 12px; bottom: 10px;
+  color: rgba(255,255,255,.42); font: 700 24px/1 var(--f-display);
+}
+.alt-today-card__status {
+  position: absolute; z-index: 3; top: 10px; left: 10px;
+  display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 9px;
+  border: 1px solid rgba(255,255,255,.12); border-radius: 999px;
+  background: rgba(8,6,9,.78); backdrop-filter: blur(10px);
+  font-size: 9px; font-weight: 700;
+}
+.alt-today-card__status i { width: 6px; height: 6px; border-radius: 50%; background: var(--alt-pink); box-shadow: 0 0 12px rgba(255,79,145,.65); }
+.alt-today-card__status.is-off i { background: #777; box-shadow: none; }
+.alt-today-card__body { display: grid; gap: 13px; min-height: 142px; padding: 15px 16px 14px; }
+.alt-today-card__name small, .alt-today-card__name strong { display: block; }
+.alt-today-card__name small { margin-bottom: 6px; color: var(--alt-pink-soft); font: 700 8px/1 var(--f-mono); letter-spacing: .12em; }
+.alt-today-card__name strong { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 600 clamp(18px,2vw,23px)/1.15 var(--f-jp-display); }
+.alt-today-card__shift { display: flex; align-items: baseline; justify-content: space-between; gap: 9px; padding-top: 11px; border-top: 1px solid var(--alt-line); }
+.alt-today-card__shift small { color: var(--alt-muted); font: 8px/1 var(--f-mono); letter-spacing: .12em; }
+.alt-today-card__shift strong { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 11px; }
+.alt-today-card__more { display: flex; justify-content: space-between; align-items: center; color: rgba(255,255,255,.48); font: 700 7px/1 var(--f-mono); letter-spacing: .12em; }
+.alt-today-card__more b { color: var(--alt-pink-soft); font-size: 13px; }
+.alt-today__schedule-link {
+  display: flex; align-items: center; justify-content: space-between;
+  width: min(100%, 390px); min-height: 48px; margin: 18px auto 0; padding: 0 17px;
+  border: 1px solid rgba(255,79,145,.34); border-radius: 999px;
+  color: #fff; background: rgba(255,79,145,.055); cursor: pointer; font-size: 11px; font-weight: 700;
+  transition: transform .18s ease, border-color .2s ease, background-color .2s ease;
+}
+.alt-today__schedule-link:hover, .alt-today__schedule-link:focus-visible { border-color: rgba(255,79,145,.72); background: rgba(255,79,145,.12); outline: 0; }
+.alt-today__schedule-link:active { transform: scale(.98); }
+.alt-today__schedule-link b { color: var(--alt-pink-soft); font-size: 16px; }
+
 /* Schedule */
 .alt-schedule { width: 100%; max-width: none; background: rgba(255,255,255,.025); }
 .alt-schedule > * { width: min(var(--alt-max), 100%); margin-left: auto; margin-right: auto; }
@@ -1106,6 +1187,11 @@ html.alt-modal-open, html.alt-modal-open body { overflow: hidden; }
   transition: transform .18s ease, border-color .22s ease, box-shadow .22s ease;
 }
 .alt-cast-card:hover, .alt-cast-card:focus-visible { transform: translateY(-4px); border-color: rgba(255,79,145,.64); box-shadow: 0 16px 34px rgba(0,0,0,.34); outline: 0; }
+.alt-cast-card.is-targeted {
+  border-color: rgba(255,79,145,.92);
+  box-shadow: 0 0 0 3px rgba(255,79,145,.12), 0 18px 44px rgba(0,0,0,.42);
+  transform: translateY(-4px);
+}
 .alt-cast-card:active { transform: scale(.975); transition-duration: .08s; }
 .alt-cast-card__photo { position: relative; display: block; width: 100%; aspect-ratio: .84; overflow: hidden; background: linear-gradient(145deg,#24131d,#0b090c); }
 .alt-cast-card__photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(4,3,5,.7), transparent 38%); pointer-events: none; }
@@ -1259,6 +1345,21 @@ html.alt-modal-open, html.alt-modal-open body { overflow: hidden; }
   .alt-update-modal__panel h3 { padding-right: 20px; font-size: clamp(27px, 8vw, 36px); }
   .alt-update-modal__body { margin-top: 20px; font-size: 12px; line-height: 1.9; }
   .alt-update-modal__panel > a { min-height: 52px; margin-top: 26px; }
+  .alt-today-cards-wrap { margin: 0 calc(var(--alt-pad) * -.25); padding: 13px 0 15px; border-radius: 24px 4px 24px 4px; }
+  .alt-today-cards__head { margin: 0 14px; min-height: 36px; padding-bottom: 10px; }
+  .alt-today-cards {
+    display: flex; gap: 9px; margin-top: 11px; padding: 0 14px 9px; overflow-x: auto;
+    scroll-snap-type: x mandatory; scroll-padding-left: 14px; scrollbar-width: none;
+  }
+  .alt-today-cards::-webkit-scrollbar { display: none; }
+  .alt-today-card { flex: 0 0 min(45vw, 184px); scroll-snap-align: start; border-radius: 17px 3px 17px 3px; }
+  .alt-today-card__media { aspect-ratio: .9; }
+  .alt-today-card__status { top: 8px; left: 8px; min-height: 25px; padding: 0 8px; font-size: 8px; }
+  .alt-today-card__media > b { right: 9px; bottom: 8px; font-size: 20px; }
+  .alt-today-card__body { gap: 11px; min-height: 128px; padding: 12px; }
+  .alt-today-card__name strong { font-size: 18px; }
+  .alt-today-card__shift strong { max-width: 95px; font-size: 9px; }
+  .alt-today__schedule-link { width: calc(100% - 28px); min-height: 45px; margin-top: 7px; font-size: 10px; }
   .alt-cast__socials { margin-bottom: 12px; }
   .alt-cast-gallery__head { display: block; }
   .alt-cast-gallery__head p { margin-top: 9px; }
@@ -1326,7 +1427,7 @@ html.alt-modal-open, html.alt-modal-open body { overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   .alt-cast-modal, .alt-cast-modal__panel, .alt-cast-modal__main-photo img { animation: none !important; }
-  .alt-cast-card, .alt-cast-card__photo img { transition-duration: .01ms !important; }
+  .alt-cast-card, .alt-cast-card__photo img, .alt-today-card, .alt-today-card__media img { transition-duration: .01ms !important; }
 }
 
 @media (max-width: 390px) {
