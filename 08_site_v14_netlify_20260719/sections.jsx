@@ -418,11 +418,11 @@ function AltCast() {
 
   return (
     <section className="alt-section alt-cast" id="cast" data-section-id="cast" data-alt-section="cast">
-      <AltHeading index="03" eyebrow="CAST / GALLERY" title="キャスト紹介" italic="" note="気になるキャストをタップすると、プロフィールと写真をまとめて見られます。" />
+      <AltHeading index="03" eyebrow="CAST / GALLERY" title="キャスト紹介" italic="" note="気になるキャストをタップすると、写真と短い紹介を見られます。" />
       <div className="alt-cast-directory alt-reveal">
         <div className="alt-cast-directory__head">
           <span>CAST LINE UP</span>
-          <p>写真をタップしてプロフィールを表示</p>
+          <p>タップで写真と短い紹介</p>
         </div>
         <div className="alt-cast-directory__rail">
           {cast.map((item, index) => (
@@ -447,7 +447,7 @@ function AltCast() {
         </div>
         {officialSocials.instagram && (
           <a className="alt-cast-directory__official" href={officialSocials.instagram} target="_blank" rel="noreferrer">
-            <span>公式Instagramでも写真を見る</span><b>↗</b>
+            <span>その他の写真は公式Instagramへ</span><b>↗</b>
           </a>
         )}
       </div>
@@ -519,9 +519,12 @@ function AltCast() {
               <p id="alt-cast-modal-description">{selectedCast.comment}</p>
               <div className="alt-cast-modal__tags">{selectedCast.tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>
               <nav className="alt-cast-modal__socials" aria-label={`${selectedCast.jp}のSNS`}>
-                {selectedSocials.instagram && <a href={selectedSocials.instagram} target="_blank" rel="noreferrer">INSTAGRAM <b>↗</b></a>}
+                {selectedSocials.instagram && <a href={selectedSocials.instagram} target="_blank" rel="noreferrer">本人のINSTAGRAM <b>↗</b></a>}
                 {selectedSocials.x && <a href={selectedSocials.x} target="_blank" rel="noreferrer">X <b>↗</b></a>}
-                {!selectedSocials.instagram && !selectedSocials.x && <span>SNSは本人確認後に公開します</span>}
+                {!selectedSocials.instagram && officialSocials.instagram && (
+                  <a href={officialSocials.instagram} target="_blank" rel="noreferrer">MORE PHOTOS / INSTAGRAM <b>↗</b></a>
+                )}
+                {!selectedSocials.instagram && !selectedSocials.x && !officialSocials.instagram && <span>SNSは本人確認後に公開します</span>}
               </nav>
             </div>
           </article>
