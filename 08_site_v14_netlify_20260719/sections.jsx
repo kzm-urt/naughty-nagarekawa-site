@@ -112,17 +112,8 @@ function altGoTo(id) {
   window.scrollTo({ top: y, behavior: reducedMotion ? "auto" : "smooth" });
 }
 
-function altGoToCast(castId) {
+function altGoToCast() {
   altGoTo("cast");
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  window.setTimeout(() => {
-    const card = [...document.querySelectorAll(".alt-cast-card")]
-      .find((item) => item.dataset.castId === castId);
-    if (!card) return;
-    card.focus({ preventScroll: true });
-    card.classList.add("is-targeted");
-    window.setTimeout(() => card.classList.remove("is-targeted"), 1200);
-  }, reducedMotion ? 0 : 520);
 }
 
 function AltNav() {
@@ -333,7 +324,7 @@ function AltToday() {
             <button
               type="button"
               className="alt-today-card"
-              onClick={() => altGoToCast(cast.id)}
+              onClick={altGoToCast}
               aria-label={`${cast.jp}のキャスト紹介へ移動。${label[status] || "本日出勤"}、${time}`}
               key={cast.id || cast.en}
             >
@@ -445,7 +436,6 @@ function AltCast() {
             <button
               type="button"
               className="alt-cast-card"
-              data-cast-id={item.id}
               onClick={() => openCast(index)}
               aria-haspopup="dialog"
               aria-label={`${item.jp}のプロフィールと写真を見る`}

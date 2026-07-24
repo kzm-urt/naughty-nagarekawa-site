@@ -1187,11 +1187,6 @@ html.alt-modal-open, html.alt-modal-open body { overflow: hidden; }
   transition: transform .18s ease, border-color .22s ease, box-shadow .22s ease;
 }
 .alt-cast-card:hover, .alt-cast-card:focus-visible { transform: translateY(-4px); border-color: rgba(255,79,145,.64); box-shadow: 0 16px 34px rgba(0,0,0,.34); outline: 0; }
-.alt-cast-card.is-targeted {
-  border-color: rgba(255,79,145,.92);
-  box-shadow: 0 0 0 3px rgba(255,79,145,.12), 0 18px 44px rgba(0,0,0,.42);
-  transform: translateY(-4px);
-}
 .alt-cast-card:active { transform: scale(.975); transition-duration: .08s; }
 .alt-cast-card__photo { position: relative; display: block; width: 100%; aspect-ratio: .84; overflow: hidden; background: linear-gradient(145deg,#24131d,#0b090c); }
 .alt-cast-card__photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(4,3,5,.7), transparent 38%); pointer-events: none; }
