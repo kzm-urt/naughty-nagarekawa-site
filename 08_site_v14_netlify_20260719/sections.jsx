@@ -157,6 +157,7 @@ function AltNav() {
           {ALT_SECTIONS.map(([id, num, label]) => (
             <a href={`#${id}`} key={id} onClick={(event) => jump(event, id)}><small>{num}</small><span>{label}</span><b>↘</b></a>
           ))}
+          <a href="#recruit" onClick={(event) => jump(event, "recruit")}><small>07</small><span>RECRUIT</span><b>↘</b></a>
           <div className="alt-nav__socials">
             {socials.instagram && <a href={socials.instagram} target="_blank" rel="noreferrer">OFFICIAL INSTAGRAM <b>↗</b></a>}
             {socials.x && <a href={socials.x} target="_blank" rel="noreferrer">OFFICIAL X <b>↗</b></a>}
@@ -780,7 +781,7 @@ function AltRecruit() {
             </label>
             <label>
               <span>接客・コンカフェ経験</span>
-              <select name="experience" value={application.experience} onChange={updateApplication}>
+              <select name="experience" value={application.experience} onChange={updateApplication} aria-label="接客・コンカフェ経験">
                 <option>未経験</option>
                 <option>経験あり</option>
                 <option>体験入店を相談したい</option>
@@ -831,7 +832,10 @@ function AltFooter() {
     <footer className="alt-footer">
       <img src="assets/logo-naughty-white-transparent.png" alt="NAUGHTY" />
       <div><p>CONCEPT CAFE / HIROSHIMA, NAGAREKAWA</p><span>夜、こっそりはじまる。ちょっとした、いたずら。</span></div>
-      <nav>{ALT_SECTIONS.map(([id, , label]) => <a href={`#${id}`} onClick={(event) => { event.preventDefault(); altGoTo(id); }} key={id}>{label}</a>)}</nav>
+      <nav>
+        {ALT_SECTIONS.map(([id, , label]) => <a href={`#${id}`} onClick={(event) => { event.preventDefault(); altGoTo(id); }} key={id}>{label}</a>)}
+        <a href="#recruit" onClick={(event) => { event.preventDefault(); altGoTo("recruit"); }}>RECRUIT</a>
+      </nav>
       <small>© 2026 NAUGHTY / LOCAL DESIGN STUDY</small>
     </footer>
   );

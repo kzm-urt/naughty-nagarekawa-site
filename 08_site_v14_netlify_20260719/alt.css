@@ -1415,7 +1415,7 @@ html.alt-modal-open, html.alt-modal-open body { overflow: hidden; }
   .alt-recruit__form-fields textarea { font-size: 16px; }
   .alt-recruit__form-output > textarea { min-height: 265px; }
   .alt-recruit__form-actions button, .alt-recruit__form-actions a { min-height: 58px; }
-  .alt-recruit-rail { top: 55%; right: 0; bottom: auto; display: grid; width: 42px; min-height: 140px; padding: 10px 5px; border: 1px solid rgba(255,255,255,.26); border-right: 0; border-radius: 14px 0 0 14px; gap: 8px; }
+  .alt-recruit-rail { top: 55%; right: 0; bottom: auto; display: grid; width: 44px; min-height: 140px; padding: 10px 5px; border: 1px solid rgba(255,255,255,.26); border-right: 0; border-radius: 14px 0 0 14px; gap: 8px; }
   .alt-recruit-rail span { writing-mode: vertical-rl; }
   .alt-recruit-rail b { writing-mode: vertical-rl; font-size: 9px; }
 }
